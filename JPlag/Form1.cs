@@ -236,25 +236,100 @@ namespace JPlag
                 var topComparisonList = new List<List<TopComparison>>();
                 var dic1 = new Dictionary<string, List<TopComparison>>();
                 var dic2 = new Dictionary<string, List<TopComparison>>();
+                var dic3 = new Dictionary<string, List<TopComparison>>();
                 foreach (Metric metric in overviews.metrics)
                 {
 
-                   dic1 = metric.topComparisons.GroupBy(x => x.first_submission).ToDictionary(g => g.Key, g => g.ToList());
+                    dic1 = metric.topComparisons.GroupBy(x => x.first_submission).ToDictionary(g => g.Key, g => g.ToList());
                     dic2 = metric.topComparisons.GroupBy(x => x.second_submission).ToDictionary(g => g.Key, g => g.ToList());
+                    dic3 = dic1.
+                    Union(dic2)
+                    .GroupBy(o => o.Key).ToDictionary(o => o.Key, o => o.SelectMany(kvp => kvp.Value).Where(kvp => kvp.match_percentage > 0.0).ToList());
+
                 }
 
-                bool merge = false;
-                foreach (KeyValuePair<string, List<TopComparison>> outter_dic in dic1)
+                foreach (var dictionary in dic3)
+                {
+                    topComparisonList.Add(dictionary.Value);
+                }
+
+
+                var _topComparisonList = new List<List<TopComparison>>();
+
+                foreach (Metric metric in overviews.metrics)
+                {
+                    for (int i = 0; i < metric.topComparisons.Count; i++)
+                    {
+                        TopComparison comparison = metric.topComparisons[i];
+                        bool continueOuterFor = false;
+                        foreach (var resultList in _topComparisonList)
+                        {
+                            foreach (var result in resultList)
+                            {
+                                if (comparison.Equals(result))
+                                {
+                                    continueOuterFor = true;
+                                    continue;
+                                }
+                            }
+                            if (continueOuterFor) { continue; }
+                        }
+                        if (continueOuterFor) { continue; }
+
+                        bool foundMatch = false;
+                        var topComparisonGroup = new List<TopComparison>();
+                        HashSet<string> hSet = new HashSet<string>();
+                        for (int j = i + 1; j < metric.topComparisons.Count; j++)
+                        {
+                            TopComparison innerComparison = metric.topComparisons[j];
+                            if (comparison.first_submission == innerComparison.first_submission
+                                || comparison.first_submission == innerComparison.second_submission
+                                || comparison.second_submission == innerComparison.first_submission
+                                || comparison.second_submission == innerComparison.second_submission 
+                                || hSet.Contains(innerComparison.first_submission) 
+                                || hSet.Contains(innerComparison.second_submission))
+                            {
+                                foundMatch = true;
+                                
+                                if (!topComparisonGroup.Contains(innerComparison))
+                                {
+                                    hSet.Add(innerComparison.first_submission);
+                                    hSet.Add(innerComparison.second_submission);
+                                    topComparisonGroup.Add(innerComparison);
+                                }
+                                if (!topComparisonGroup.Contains(comparison))
+                                {
+                                    hSet.Add(comparison.first_submission);
+                                    hSet.Add(comparison.second_submission);
+                                    topComparisonGroup.Add(comparison);
+                                }
+                            }
+                        }
+
+                        if (!_topComparisonList.Contains(topComparisonGroup) && topComparisonGroup.Count>0)
+                        {
+                            _topComparisonList.Add(topComparisonGroup);
+                        }
+
+                        if (!foundMatch)
+                        {
+                            _topComparisonList.Add(new List<TopComparison>() { comparison });
+                        }
+                    }
+                }
+
+
+                foreach (KeyValuePair<string, List<TopComparison>> outter_dic in dic3)
                 {
                     List<TopComparison> topComparisons_list = new List<TopComparison>();
-                    foreach (KeyValuePair<string, List<TopComparison>> inner_dic in dic2)
+                    foreach (KeyValuePair<string, List<TopComparison>> inner_dic in dic1)
                     {
-                        foreach(TopComparison topComparison in inner_dic.Value)
+                        foreach (TopComparison topComparison in inner_dic.Value)
                         {
-                            if(outter_dic.Key.Equals(topComparison.first_submission) 
+                            if (outter_dic.Key.Equals(topComparison.first_submission)
                                 || outter_dic.Key.Equals(topComparison.second_submission))
                             {
-                                topComparisons_list = outter_dic.Value.Concat(inner_dic.Value).ToList();
+                                topComparisons_list = outter_dic.Value.Union(inner_dic.Value).ToList();
                             }
                         }
                     }
@@ -262,9 +337,9 @@ namespace JPlag
                 }
 
 
-                    //below logic is working and writen by rohan
-                    int count = 1;
-                foreach (List<TopComparison> topComparison in topComparisonList)
+                //below logic is working for properly grouped inputs and it is writen by rohan
+                int count = 1;
+                foreach (List<TopComparison> topComparison in _topComparisonList)
                 {
                     dic_top_comparision.Add("Group " + count, topComparison);
                     List<string> names = new List<string>();
@@ -274,7 +349,7 @@ namespace JPlag
                         string second_name = null;
                         bool is_first_name_present = true;
                         bool is_second_name_present = true;
-                        if(names.Count > 0)
+                        if (names.Count > 0)
                         {
                             foreach (string name in names)
                             {
@@ -283,9 +358,9 @@ namespace JPlag
                                     first_name = comparison.first_submission;
                                     names.Add(first_name);
                                     is_first_name_present = false;
-                                    
+
                                 }
-                                
+
                                 if (!name.Equals(comparison.second_submission))
                                 {
                                     second_name = comparison.second_submission;
@@ -294,14 +369,15 @@ namespace JPlag
                                     break;
                                 }
                             }
-                        } else
+                        }
+                        else
                         {
                             first_name = comparison.first_submission;
                             is_first_name_present = false;
                             second_name = comparison.second_submission;
                             is_second_name_present = false;
                         }
-                        
+
                         if (!is_second_name_present)
                         {
                             names.Add(second_name);
