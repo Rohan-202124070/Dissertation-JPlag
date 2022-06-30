@@ -88,13 +88,13 @@ namespace JPlag
                             {
                                 foundMatch = true;
                                 
-                                if (!topComparisonGroup.Contains(innerComparison))
+                                if (!topComparisonGroup.Contains(innerComparison) && innerComparison.match_percentage > 0.0)
                                 {
                                     hSet.Add(innerComparison.first_submission);
                                     hSet.Add(innerComparison.second_submission);
                                     topComparisonGroup.Add(innerComparison);
                                 }
-                                if (!topComparisonGroup.Contains(comparison))
+                                if (!topComparisonGroup.Contains(comparison) && comparison.match_percentage > 0.0)
                                 {
                                     hSet.Add(comparison.first_submission);
                                     hSet.Add(comparison.second_submission);
@@ -108,7 +108,7 @@ namespace JPlag
                             _topComparisonList.Add(topComparisonGroup);
                         }
 
-                        if (!foundMatch)
+                        if (!foundMatch && comparison.match_percentage > 0.0)
                         {
                             _topComparisonList.Add(new List<TopComparison>() { comparison });
                         }
@@ -156,9 +156,10 @@ namespace JPlag
                             }
                         }
                         new_topComparisonList.Add(_strict_topComparision);
-                    } else
+                    }
+                    else
                     {
-                        foreach(var outter in new_topComparisonList)
+                        foreach (var outter in new_topComparisonList)
                         {
                             HashSet<string> _name_hashset = new HashSet<string>();
                             foreach (TopComparison comparison in outter)
@@ -175,6 +176,10 @@ namespace JPlag
                                 break;
                             }
                         }
+                    }
+                    if (new_topComparisonList.Count < 1)
+                    {
+                        new_topComparisonList.Add(_topComparisonList[i]);
                     }
                 }
 
@@ -243,5 +248,56 @@ namespace JPlag
 
         }
 
+        private void button3_Click(object sender, EventArgs e)
+        {
+            if (folderBrowserDialog1.ShowDialog() == DialogResult.OK) // Test result.
+            {
+                try
+                {
+                    textBox2.Text = folderBrowserDialog1.SelectedPath;
+                }
+                catch (IOException)
+                {
+                }
+            }
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            //https://stackoverflow.com/questions/4871013/clr-has-been-unable-to-transition-from-com-context-0x3b2d70-to-com-context
+            //https://social.msdn.microsoft.com/Forums/vstudio/en-US/f07f7744-0ea5-40b3-a787-ea1c10ec55f3/cmdexe-from-cnet-application?forum=netfxbcl
+            //https://stackoverflow.com/questions/65522516/determine-if-a-command-has-been-finished-executing-in-cmd-in-c-sharp
+
+
+            StreamWriter ToCMDShell = null;
+            ProcessStartInfo startInfo = new ProcessStartInfo("CMD.exe");
+            Process p = new Process();
+            startInfo.RedirectStandardInput = true;
+            startInfo.UseShellExecute = false;
+            startInfo.RedirectStandardOutput = true;
+            startInfo.RedirectStandardError = true;
+            p = Process.Start(startInfo);
+            p.StandardInput.WriteLine(@"Echo on");
+            p.StandardInput.WriteLine(@"chdir " + textBox2.Text);
+            p.StandardInput.WriteLine(@"mvn clean package assembly:single");
+            /*string output = p.StandardOutput.ReadToEnd();
+            string error = p.StandardError.ReadToEnd();
+            p.WaitForExit();
+            Console.Write(output);
+            p.Close();
+            Console.Read();*/
+
+            ToCMDShell = p.StandardInput;
+            ToCMDShell.AutoFlush = true;
+            p.BeginOutputReadLine();
+            p.BeginErrorReadLine();
+            p.OutputDataReceived += (s, m) => Console.WriteLine(m.Data);
+            p.ErrorDataReceived += (s, m) => Console.WriteLine($"ERR: {m.Data}");
+           // var run = ToCMDShell.WriteLineAsync("ping 8.8.8.8"); //Execute a long running command in cmd terminal.
+            // do some stuff
+            //run.Wait(); // wait for long command to complete
+            ToCMDShell.WriteLine("exit"); //Done
+
+        }
     }
 }
