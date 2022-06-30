@@ -16,6 +16,7 @@ namespace JPlag
 {
     public partial class Form1 : Form
     {
+        string output = "";
         Dictionary<string, List<TopComparison>> dic_top_comparision = new Dictionary<string, List<TopComparison>>();
         Dictionary<string, List<string>> dic_groups_names = new Dictionary<string, List<string>>();
 
@@ -50,7 +51,7 @@ namespace JPlag
             {
                 string json = r.ReadToEnd();
                 Overview overviews = JsonConvert.DeserializeObject<Overview>(json);
-              
+
                 var _topComparisonList = new List<List<TopComparison>>();
 
                 foreach (Metric metric in overviews.metrics)
@@ -82,12 +83,12 @@ namespace JPlag
                             if (comparison.first_submission == innerComparison.first_submission
                                 || comparison.first_submission == innerComparison.second_submission
                                 || comparison.second_submission == innerComparison.first_submission
-                                || comparison.second_submission == innerComparison.second_submission 
-                                || hSet.Contains(innerComparison.first_submission) 
+                                || comparison.second_submission == innerComparison.second_submission
+                                || hSet.Contains(innerComparison.first_submission)
                                 || hSet.Contains(innerComparison.second_submission))
                             {
                                 foundMatch = true;
-                                
+
                                 if (!topComparisonGroup.Contains(innerComparison) && innerComparison.match_percentage > 0.0)
                                 {
                                     hSet.Add(innerComparison.first_submission);
@@ -103,7 +104,7 @@ namespace JPlag
                             }
                         }
 
-                        if (!_topComparisonList.Contains(topComparisonGroup) && topComparisonGroup.Count>0)
+                        if (!_topComparisonList.Contains(topComparisonGroup) && topComparisonGroup.Count > 0)
                         {
                             _topComparisonList.Add(topComparisonGroup);
                         }
@@ -143,7 +144,7 @@ namespace JPlag
                         {
                             foundAnyOverlap = true;
                             _loop_topComparision = _loop_topComparision.Union(_topComparisonList[i].Union(_topComparisonList[j]).ToList()).ToList();
-                        } 
+                        }
                     }
 
                     if (foundAnyOverlap)
@@ -171,7 +172,8 @@ namespace JPlag
                             {
                                 new_topComparisonList.Add(_topComparisonList[i]);
                                 break;
-                            } else
+                            }
+                            else
                             {
                                 break;
                             }
@@ -268,36 +270,69 @@ namespace JPlag
             //https://social.msdn.microsoft.com/Forums/vstudio/en-US/f07f7744-0ea5-40b3-a787-ea1c10ec55f3/cmdexe-from-cnet-application?forum=netfxbcl
             //https://stackoverflow.com/questions/65522516/determine-if-a-command-has-been-finished-executing-in-cmd-in-c-sharp
 
-
-            StreamWriter ToCMDShell = null;
+            output = "";
+            //StreamWriter ToCMDShell = null;
             ProcessStartInfo startInfo = new ProcessStartInfo("CMD.exe");
             Process p = new Process();
             startInfo.RedirectStandardInput = true;
             startInfo.UseShellExecute = false;
             startInfo.RedirectStandardOutput = true;
             startInfo.RedirectStandardError = true;
+            p.EnableRaisingEvents = true;
             p = Process.Start(startInfo);
+            p.EnableRaisingEvents = true;
             p.StandardInput.WriteLine(@"Echo on");
             p.StandardInput.WriteLine(@"chdir " + textBox2.Text);
-            p.StandardInput.WriteLine(@"mvn clean package assembly:single");
+            p.StandardInput.WriteLine(@"mvn clean package assembly:single" + "& exit");
             /*string output = p.StandardOutput.ReadToEnd();
             string error = p.StandardError.ReadToEnd();
-            p.WaitForExit();
+            
             Console.Write(output);
             p.Close();
             Console.Read();*/
 
-            ToCMDShell = p.StandardInput;
-            ToCMDShell.AutoFlush = true;
+            // ToCMDShell = p.StandardInput;
+            // ToCMDShell.AutoFlush = true;
             p.BeginOutputReadLine();
             p.BeginErrorReadLine();
-            p.OutputDataReceived += (s, m) => Console.WriteLine(m.Data);
-            p.ErrorDataReceived += (s, m) => Console.WriteLine($"ERR: {m.Data}");
-           // var run = ToCMDShell.WriteLineAsync("ping 8.8.8.8"); //Execute a long running command in cmd terminal.
+            /*p.OutputDataReceived += (s, m) => Console.WriteLine(m.Data);
+            p.ErrorDataReceived += (s, m) => Console.WriteLine($"ERR: {m.Data}");*/
+            p.OutputDataReceived += new System.Diagnostics.DataReceivedEventHandler(Process_outputDataRecieved);
+            p.ErrorDataReceived += new System.Diagnostics.DataReceivedEventHandler(Process_ErrortDataRecieved);
+            p.Exited += new System.EventHandler(Process_exited);
+            // var run = ToCMDShell.WriteLineAsync("ping 8.8.8.8"); //Execute a long running command in cmd terminal.
             // do some stuff
             //run.Wait(); // wait for long command to complete
-            ToCMDShell.WriteLine("exit"); //Done
+            //ToCMDShell.WriteLine("exit"); //Done
+            //int code = p.ExitCode;
+        }
 
+        void Process_exited(Object sender, EventArgs eventArgs)
+        {
+            if (output.Contains("BUILD SUCCESS"))
+            {
+
+                MessageBox.Show("JPlag jars have been built successfully!!!\n", "Build Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                System.Windows.Forms.MessageBox.Show("1. Please check the JPlag project path is proper. \n" +
+                    "2. Please check Maven is configured in your local machine. \n" +
+                    "3. Please take update from the JPlag repo. \n", "Build Failure", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            }
+        }
+
+        void Process_outputDataRecieved(Object sender, DataReceivedEventArgs dataReceivedEventArgs)
+        {
+            output += dataReceivedEventArgs.Data;
+            Console.WriteLine(dataReceivedEventArgs.Data);
+        }
+
+        void Process_ErrortDataRecieved(Object sender, DataReceivedEventArgs dataReceivedEventArgs)
+        {
+            output += dataReceivedEventArgs.Data;
+            Console.WriteLine(dataReceivedEventArgs.Data);
         }
     }
 }
