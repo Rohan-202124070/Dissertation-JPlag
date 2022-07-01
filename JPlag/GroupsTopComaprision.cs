@@ -8,7 +8,7 @@ namespace JPlag
 {
     class GroupsTopComaprision
     {
-        public Dictionary<string, List<string>> groups_names { set; get; }
-        public Dictionary<string, List<TopComparison>> groups_top_comparision { set; get; }
+        public Dictionary<string, HashSet<string>> groups_names { set; get; }
+        public Dictionary<string, HashSet<TopComparison>> groups_top_comparision { set; get; }
     }
 }

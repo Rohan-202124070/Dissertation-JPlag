@@ -34,7 +34,7 @@ namespace JPlag
             int i = 0;
             
             int x = 2;
-            foreach (KeyValuePair<string, List<string>> group in groups.groups_names)
+            foreach (KeyValuePair<string, HashSet<string>> group in groups.groups_names)
             {
                 buttons[i] = new Button();
                 buttons[i].Text = group.Key;
@@ -54,7 +54,7 @@ namespace JPlag
                 x += 50;
             }
 
-            void open_group_clicked(object sender, EventArgs e, List<string> in_groups, List<TopComparison> in_top_comparision)
+            void open_group_clicked(object sender, EventArgs e, HashSet<string> in_groups, HashSet<TopComparison> in_top_comparision)
             {
                 group_form.label2.Show();
                 group_form.label4.Show();

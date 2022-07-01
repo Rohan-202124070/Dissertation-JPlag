@@ -17,8 +17,8 @@ namespace JPlag
     public partial class Form1 : Form
     {
         string output = "";
-        Dictionary<string, List<TopComparison>> dic_top_comparision = new Dictionary<string, List<TopComparison>>();
-        Dictionary<string, List<string>> dic_groups_names = new Dictionary<string, List<string>>();
+        Dictionary<string, HashSet<TopComparison>> dic_top_comparision = new Dictionary<string, HashSet<TopComparison>>();
+        Dictionary<string, HashSet<string>> dic_groups_names = new Dictionary<string, HashSet<string>>();
 
         public class group
         {
@@ -52,7 +52,7 @@ namespace JPlag
                 string json = r.ReadToEnd();
                 Overview overviews = JsonConvert.DeserializeObject<Overview>(json);
 
-                var _topComparisonList = new List<List<TopComparison>>();
+                var _topComparisonList = new HashSet<HashSet<TopComparison>>();
 
                 foreach (Metric metric in overviews.metrics)
                 {
@@ -75,7 +75,7 @@ namespace JPlag
                         if (continueOuterFor) { continue; }
 
                         bool foundMatch = false;
-                        var topComparisonGroup = new List<TopComparison>();
+                        var topComparisonGroup = new HashSet<TopComparison>();
                         HashSet<string> hSet = new HashSet<string>();
                         for (int j = i + 1; j < metric.topComparisons.Count; j++)
                         {
@@ -89,13 +89,13 @@ namespace JPlag
                             {
                                 foundMatch = true;
 
-                                if (!topComparisonGroup.Contains(innerComparison) && innerComparison.match_percentage > 0.0)
+                                if (!topComparisonGroup.Contains(innerComparison) && innerComparison.match_percentage > 70.0)
                                 {
                                     hSet.Add(innerComparison.first_submission);
                                     hSet.Add(innerComparison.second_submission);
                                     topComparisonGroup.Add(innerComparison);
                                 }
-                                if (!topComparisonGroup.Contains(comparison) && comparison.match_percentage > 0.0)
+                                if (!topComparisonGroup.Contains(comparison) && comparison.match_percentage > 70.0)
                                 {
                                     hSet.Add(comparison.first_submission);
                                     hSet.Add(comparison.second_submission);
@@ -109,32 +109,34 @@ namespace JPlag
                             _topComparisonList.Add(topComparisonGroup);
                         }
 
-                        if (!foundMatch && comparison.match_percentage > 0.0)
+                        if (!foundMatch && comparison.match_percentage > 70.0)
                         {
-                            _topComparisonList.Add(new List<TopComparison>() { comparison });
+                            _topComparisonList.Add(new HashSet<TopComparison>() { comparison });
                         }
                     }
                 }
 
-                var new_topComparisonList = new List<List<TopComparison>>();
-                for (int i = 0; i < _topComparisonList.Count; i++)
+                var new_topComparisonList = new HashSet<HashSet<TopComparison>>();
+                var distinct_topComparisonList = _topComparisonList.Distinct().ToList();
+
+                for (int i = 0; i < distinct_topComparisonList.Count; i++)
                 {
-                    List<TopComparison> _loop_topComparision = new List<TopComparison>();
-                    List<TopComparison> _strict_topComparision = new List<TopComparison>();
+                    HashSet<TopComparison> _loop_topComparision = new HashSet<TopComparison>();
+                    HashSet<TopComparison> _strict_topComparision = new HashSet<TopComparison>();
                     HashSet<string> outter_name_hashset = new HashSet<string>();
                     HashSet<string> inner_name_hashset = new HashSet<string>();
                     bool foundAnyOverlap = false;
 
-                    foreach (TopComparison outter_topComparison in _topComparisonList[i])
+                    foreach (TopComparison outter_topComparison in distinct_topComparisonList[i])
                     {
                         outter_name_hashset.Add(outter_topComparison.first_submission);
                         outter_name_hashset.Add(outter_topComparison.second_submission);
                     }
 
-                    for (int j = i + 1; j < _topComparisonList.Count; j++)
+                    for (int j = i + 1; j < distinct_topComparisonList.Count; j++)
                     {
                         inner_name_hashset = new HashSet<string>();
-                        foreach (TopComparison inner_topComparison in _topComparisonList[j])
+                        foreach (TopComparison inner_topComparison in distinct_topComparisonList[j])
                         {
                             inner_name_hashset.Add(inner_topComparison.first_submission);
                             inner_name_hashset.Add(inner_topComparison.second_submission);
@@ -143,23 +145,74 @@ namespace JPlag
                         if (outter_name_hashset.Overlaps(inner_name_hashset))
                         {
                             foundAnyOverlap = true;
-                            _loop_topComparision = _loop_topComparision.Union(_topComparisonList[i].Union(_topComparisonList[j]).ToList()).ToList();
+                            bool is_main_overlaps = false;
+                            _loop_topComparision = distinct_topComparisonList[i].Union(distinct_topComparisonList[j]).ToHashSet();
+                            var out_hash = new HashSet<string>();
+                            foreach (TopComparison top in _loop_topComparision)
+                            {
+                                out_hash.Add(top.first_submission);
+                                out_hash.Add(top.second_submission);
+                                if (!_strict_topComparision.Contains(top))
+                                {
+                                    _strict_topComparision.Add(top);
+                                }
+                            }
+                            for (int k = 0; k < new_topComparisonList.ToList().Count; k++)
+                            {
+                                var in_hash = new HashSet<string>();
+
+                                foreach (TopComparison top in new_topComparisonList.ToList()[k])
+                                {
+                                    in_hash.Add(top.first_submission);
+                                    in_hash.Add(top.second_submission);
+                                }
+
+                                if (out_hash.Overlaps(in_hash))
+                                {
+                                    is_main_overlaps = true;
+                                    //they have same values so swap the existing list value
+                                    if (out_hash.Count > in_hash.Count)
+                                    {
+                                        //new_topComparisonList.ToList().ForEach(a => a.Value = _loop_topComparision);
+                                        new_topComparisonList.Remove(new_topComparisonList.ToList()[k]);
+                                        new_topComparisonList.Add(_loop_topComparision);
+                                    }
+
+                                }
+                                /*else
+                                {
+                                    // if it does'nt find the match and its a last index then add it to the list
+                                    if (k == new_topComparisonList.ToList().Count - 1)
+                                    {
+                                        new_topComparisonList.Add(_loop_topComparision);
+                                    }
+                                }*/
+                            }
+                            if (!is_main_overlaps)
+                            {
+                                new_topComparisonList.Add(_loop_topComparision);
+                            }
                         }
                     }
 
                     if (foundAnyOverlap)
                     {
-                        foreach (TopComparison top in _loop_topComparision)
+                        // do nothing............ other wise produces duplicates
+                        // adding duplicates
+                        
+                        /*foreach (TopComparison top in _loop_topComparision)
                         {
                             if (!_strict_topComparision.Contains(top))
                             {
                                 _strict_topComparision.Add(top);
                             }
                         }
-                        new_topComparisonList.Add(_strict_topComparision);
+                        new_topComparisonList.Add(_strict_topComparision);*/
                     }
                     else
                     {
+                        int index_count = 0;
+                        bool is_overlaps = false;
                         foreach (var outter in new_topComparisonList)
                         {
                             HashSet<string> _name_hashset = new HashSet<string>();
@@ -168,29 +221,42 @@ namespace JPlag
                                 _name_hashset.Add(comparison.first_submission);
                                 _name_hashset.Add(comparison.second_submission);
                             }
-                            if (!outter_name_hashset.Overlaps(_name_hashset))
+                            /*if (!outter_name_hashset.Overlaps(_name_hashset) && index_count == new_topComparisonList.ToList().Count - 1)
                             {
-                                new_topComparisonList.Add(_topComparisonList[i]);
+                                is_overlaps = true;
+                                index_count++;
+                                new_topComparisonList.Add(distinct_topComparisonList[i]);
                                 break;
                             }
                             else
                             {
-                                break;
+                                index_count++;
+                                //break;
+                            }*/
+
+                            if (outter_name_hashset.Overlaps(_name_hashset))
+                            {
+                                is_overlaps = true;
                             }
                         }
+                        if (!is_overlaps)
+                        {
+                            new_topComparisonList.Add(distinct_topComparisonList[i]);
+                        }
+
                     }
                     if (new_topComparisonList.Count < 1)
                     {
-                        new_topComparisonList.Add(_topComparisonList[i]);
+                        new_topComparisonList.Add(distinct_topComparisonList[i]);
                     }
                 }
 
                 //below logic is working for properly grouped inputs and it is writen by rohan
                 int count = 1;
-                foreach (List<TopComparison> topComparison in new_topComparisonList)
+                foreach (HashSet<TopComparison> topComparison in new_topComparisonList)
                 {
                     dic_top_comparision.Add("Group " + count, topComparison);
-                    List<string> names = new List<string>();
+                    HashSet<string> names = new HashSet<string>();
                     foreach (TopComparison comparison in topComparison)
                     {
                         string first_name = null;
@@ -234,7 +300,7 @@ namespace JPlag
                         }
                     }
 
-                    dic_groups_names.Add("Group " + count, (names.Distinct().ToList()));
+                    dic_groups_names.Add("Group " + count, (names));
                     count++;
                 }
             }
