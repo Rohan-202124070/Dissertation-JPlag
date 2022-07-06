@@ -33,6 +33,7 @@ namespace JPlag
             InitializeComponent();
             comboBox1.SelectedIndex = 0;
             comboBox2.SelectedIndex = 0;
+            textBox4.Text = "50.0";
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -52,6 +53,8 @@ namespace JPlag
 
         private void button2_Click(object sender, EventArgs e)
         {
+            distinct_topcomparision = new Dictionary<string, HashSet<TopComparison>>();
+            distinct_groups_names = new Dictionary<string, HashSet<string>>();
             double considered_percentage = 0.0;
             if (textBox4.Text != null || !textBox4.Text.Equals(""))
             {

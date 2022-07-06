@@ -30,6 +30,7 @@ namespace JPlag
             group_form.Show();
             group_form.label2.Hide();
             group_form.label4.Hide();
+            group_form.label5.Hide();
             Button[] buttons = new Button[groups.groups_names.Count];
             int i = 0;
             
@@ -47,15 +48,17 @@ namespace JPlag
                 buttons[i].Top = basey;*/
                 /*buttons[i].Left = 50;
                 buttons[i].Top = (i + 1) * 80;*/
-                buttons[i].Click += (sender, e) => { open_group_clicked(sender, e, group.Value, groups.groups_top_comparision[group.Key]); };
+                buttons[i].Click += (sender, e) => { open_group_clicked(sender, e, group.Key, group.Value, groups.groups_top_comparision[group.Key]); };
                 //group_form.Controls.Add(buttons[i]);
                 group_form.panel1.Controls.Add(buttons[i]);
                 i++;
                 x += 50;
             }
 
-            void open_group_clicked(object sender, EventArgs e, HashSet<string> in_groups, HashSet<TopComparison> in_top_comparision)
+            void open_group_clicked(object sender, EventArgs e, string group_number, HashSet<string> in_groups, HashSet<TopComparison> in_top_comparision)
             {
+                group_form.label5.Show();
+                group_form.label5.Text = "- " + group_number;
                 group_form.label2.Show();
                 group_form.label4.Show();
                 group_form.panel2.Controls.Clear();
@@ -131,6 +134,16 @@ namespace JPlag
         }
 
         private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void panel2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void label5_Click(object sender, EventArgs e)
         {
 
         }
