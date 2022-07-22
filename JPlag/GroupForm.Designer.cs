@@ -29,14 +29,14 @@ namespace JPlag
         /// </summary>
         private void InitializeComponent()
         {
+            Microsoft.Msagl.Core.Geometry.Curves.PlaneTransformation planeTransformation1 = new Microsoft.Msagl.Core.Geometry.Curves.PlaneTransformation();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Groups));
             this.label1 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
+            this.gViewer1 = new Microsoft.Msagl.GraphViewerGdi.GViewer();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -65,7 +65,7 @@ namespace JPlag
             // panel1
             // 
             this.panel1.AutoScroll = true;
-            this.panel1.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            this.panel1.BackColor = System.Drawing.Color.AliceBlue;
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panel1.Location = new System.Drawing.Point(12, 68);
             this.panel1.Name = "panel1";
@@ -75,56 +75,59 @@ namespace JPlag
             // panel2
             // 
             this.panel2.AutoScroll = true;
-            this.panel2.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            this.panel2.BackColor = System.Drawing.Color.AliceBlue;
             this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.panel2.Controls.Add(this.gViewer1);
             this.panel2.Location = new System.Drawing.Point(364, 68);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(1537, 970);
             this.panel2.TabIndex = 8;
             this.panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.panel2_Paint);
             // 
-            // label4
+            // gViewer1
             // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.label4.Location = new System.Drawing.Point(644, 557);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(476, 37);
-            this.label4.TabIndex = 5;
-            this.label4.Text = "Student Plagiarism Comparision";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.label2.Location = new System.Drawing.Point(462, 107);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(366, 37);
-            this.label2.TabIndex = 4;
-            this.label2.Text = "List of Student Name/ID ";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.label5.Location = new System.Drawing.Point(816, 107);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(126, 37);
-            this.label5.TabIndex = 0;
-            this.label5.Text = "- Group";
-            this.label5.Click += new System.EventHandler(this.label5_Click);
+            this.gViewer1.ArrowheadLength = 10D;
+            this.gViewer1.AsyncLayout = false;
+            this.gViewer1.AutoScroll = true;
+            this.gViewer1.BackwardEnabled = false;
+            this.gViewer1.BuildHitTree = true;
+            this.gViewer1.CurrentLayoutMethod = Microsoft.Msagl.GraphViewerGdi.LayoutMethod.UseSettingsOfTheGraph;
+            this.gViewer1.EdgeInsertButtonVisible = true;
+            this.gViewer1.FileName = "";
+            this.gViewer1.ForwardEnabled = false;
+            this.gViewer1.Graph = null;
+            this.gViewer1.InsertingEdge = false;
+            this.gViewer1.LayoutAlgorithmSettingsButtonVisible = true;
+            this.gViewer1.LayoutEditingEnabled = true;
+            this.gViewer1.Location = new System.Drawing.Point(22, 21);
+            this.gViewer1.LooseOffsetForRouting = 0.25D;
+            this.gViewer1.MouseHitDistance = 0.05D;
+            this.gViewer1.Name = "gViewer1";
+            this.gViewer1.NavigationVisible = true;
+            this.gViewer1.NeedToCalculateLayout = true;
+            this.gViewer1.OffsetForRelaxingInRouting = 0.6D;
+            this.gViewer1.PaddingForEdgeRouting = 8D;
+            this.gViewer1.PanButtonPressed = false;
+            this.gViewer1.SaveAsImageEnabled = true;
+            this.gViewer1.SaveAsMsaglEnabled = true;
+            this.gViewer1.SaveButtonVisible = true;
+            this.gViewer1.SaveGraphButtonVisible = true;
+            this.gViewer1.SaveInVectorFormatEnabled = true;
+            this.gViewer1.Size = new System.Drawing.Size(1488, 926);
+            this.gViewer1.TabIndex = 0;
+            this.gViewer1.TightOffsetForRouting = 0.125D;
+            this.gViewer1.ToolBarIsVisible = true;
+            this.gViewer1.Transform = planeTransformation1;
+            this.gViewer1.UndoRedoButtonsVisible = true;
+            this.gViewer1.WindowZoomButtonPressed = false;
+            this.gViewer1.ZoomF = 1D;
+            this.gViewer1.ZoomWindowThreshold = 0.05D;
             // 
             // Groups
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1924, 1050);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label4);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.label3);
@@ -134,6 +137,7 @@ namespace JPlag
             this.Text = "Groups";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.Form2_Load);
+            this.panel2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -144,8 +148,6 @@ namespace JPlag
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label5;
+        private Microsoft.Msagl.GraphViewerGdi.GViewer gViewer1;
     }
 }

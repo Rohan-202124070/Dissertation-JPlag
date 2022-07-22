@@ -14,7 +14,7 @@ using System.Windows.Forms;
 
 namespace JPlag
 {
-    public partial class Form1 : Form
+    public partial class Administartive : Form
     {
         string build_output_log = "";
         string report_output_log = "";
@@ -28,7 +28,7 @@ namespace JPlag
             public List<string> names { get; set; }
         }
 
-        public Form1()
+        public Administartive()
         {
             InitializeComponent();
             comboBox1.SelectedIndex = 0;
@@ -361,153 +361,15 @@ namespace JPlag
 
         private void button4_Click(object sender, EventArgs e)
         {
-            //https://stackoverflow.com/questions/4871013/clr-has-been-unable-to-transition-from-com-context-0x3b2d70-to-com-context
-            //https://social.msdn.microsoft.com/Forums/vstudio/en-US/f07f7744-0ea5-40b3-a787-ea1c10ec55f3/cmdexe-from-cnet-application?forum=netfxbcl
-            //https://stackoverflow.com/questions/65522516/determine-if-a-command-has-been-finished-executing-in-cmd-in-c-sharp
-
-            build_output_log = "";
-            ProcessStartInfo startInfo = new ProcessStartInfo("CMD.exe");
-            project_build_process = new Process();
-            startInfo.RedirectStandardInput = true;
-            startInfo.UseShellExecute = false;
-            startInfo.RedirectStandardOutput = true;
-            startInfo.RedirectStandardError = true;
-            project_build_process.EnableRaisingEvents = true;
-            project_build_process = Process.Start(startInfo);
-            project_build_process.EnableRaisingEvents = true;
-            project_build_process.StandardInput.WriteLine(@"Echo on");
-            project_build_process.StandardInput.WriteLine(@"chdir " + textBox2.Text);
-            project_build_process.StandardInput.WriteLine(@"mvn clean package assembly:single" + "& exit");
-            project_build_process.BeginOutputReadLine();
-            project_build_process.BeginErrorReadLine();
-            project_build_process.OutputDataReceived += new System.Diagnostics.DataReceivedEventHandler(ProcessRecievedForProjectBuild);
-            project_build_process.ErrorDataReceived += new System.Diagnostics.DataReceivedEventHandler(ProcessRecievedForProjectBuildError);
-            project_build_process.Exited += new System.EventHandler(ProcessBuildExited);
-        }
-
-        void ProcessBuildExited(Object sender, EventArgs eventArgs)
-        {
-            if (build_output_log.Contains("BUILD SUCCESS"))
-            {
-
-                MessageBox.Show("JPlag jars have been built successfully!!!\n", "Build Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            else
-            {
-                System.Windows.Forms.MessageBox.Show("1. Please check the JPlag project path is proper. \n" +
-                    "2. Please check Maven is configured in your local machine. \n" +
-                    "3. Please take update/pull from the JPlag repo. \n", "Build Failure", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-            }
-        }
-
-        void ProcessRecievedForProjectBuild(Object sender, DataReceivedEventArgs dataReceivedEventArgs)
-        {
-            build_output_log += dataReceivedEventArgs.Data;
-            Console.WriteLine(dataReceivedEventArgs.Data);
-        }
-
-        void ProcessRecievedForProjectBuildError(Object sender, DataReceivedEventArgs dataReceivedEventArgs)
-        {
-            build_output_log += dataReceivedEventArgs.Data;
-            Console.WriteLine(dataReceivedEventArgs.Data);
+            
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
-            report_output_log = "";
-            ProcessStartInfo startInfo = new ProcessStartInfo("CMD.exe");
-            report_view_process = new Process();
-            startInfo.RedirectStandardInput = true;
-            startInfo.UseShellExecute = false;
-            startInfo.RedirectStandardOutput = true;
-            startInfo.RedirectStandardError = true;
-            report_view_process.EnableRaisingEvents = true;
-            report_view_process = Process.Start(startInfo);
-            report_view_process.EnableRaisingEvents = true;
-            report_view_process.StandardInput.WriteLine(@"Echo on");
-            report_view_process.StandardInput.WriteLine(@"chdir " + textBox2.Text + "\\report-viewer");
-            report_view_process.StandardInput.WriteLine("/c " + @"npm i" + "& npm run serve" + "& EXIT");
-            report_view_process.BeginOutputReadLine();
-            report_view_process.BeginErrorReadLine();
-            report_view_process.OutputDataReceived += new System.Diagnostics.DataReceivedEventHandler(ProcessRecievedForReportView);
-            report_view_process.ErrorDataReceived += new System.Diagnostics.DataReceivedEventHandler(ProcessRecievedForReportViewError);
-            report_view_process.Exited += new System.EventHandler(ProcessReportViewExited);
+            JPlagReport plagiarismReport = new JPlagReport();
+            plagiarismReport.View_Plagiarism_Report(folderBrowserDialog1.SelectedPath);
         }
 
-        void ProcessReportViewExited(Object sender, EventArgs eventArgs)
-        {
-            if (report_output_log.Contains("No issues found.") || report_output_log.Contains("App running at:"))
-            {
-                var addresses = new List<string>();
-                var log_links = report_output_log.Split("\t\n ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Where(s => s.StartsWith("http://") || s.StartsWith("https://"));
-                foreach (string link in log_links)
-                {
-                    addresses.Add(link);
-                    if (link.Contains("localhost"))
-                    {
-                        System.Diagnostics.Process.Start(link);
-                    }
-                }
-
-                var stringBuilder = new StringBuilder();
-                var links = new List<LinkLabel.Link>();
-
-                foreach (var address in addresses)
-                {
-                    if (stringBuilder.Length > 0) stringBuilder.AppendLine();
-
-                    // We cannot add the new LinkLabel.Link to the LinkLabel yet because
-                    // there is no text in the label yet, so the label will complain about
-                    // the link location being out of range. So we'll temporarily store
-                    // the links in a collection and add them later.
-                    links.Add(new LinkLabel.Link(stringBuilder.Length, address.Length, address));
-                    stringBuilder.Append(address);
-                }
-
-                var linkLabel = new LinkLabel();
-                // We must set the text before we add the links.
-                linkLabel.Text = stringBuilder.ToString();
-                foreach (var link in links)
-                {
-                    linkLabel.Links.Add(link);
-                }
-                linkLabel.AutoSize = true;
-                linkLabel.LinkClicked += (s, e) =>
-                {
-                    System.Diagnostics.Process.Start((string)e.Link.LinkData);
-                };
-
-                MessageBox.Show("Report view server started successfully!!!\n" + Environment.NewLine + "Below are the report view links :  \n" + Environment.NewLine + linkLabel.Text, "Report Viewer Running", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            else
-            {
-                System.Windows.Forms.MessageBox.Show("1. Please check the JPlag project path is proper. \n" +
-                    "2. Please check node js has installed and configured in your local machine. \n" +
-                    "3. Please take update/pull from the JPlag repo. \n", "Build Failure", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-            }
-        }
-
-        void ProcessRecievedForReportView(Object sender, DataReceivedEventArgs dataReceivedEventArgs)
-        {
-            report_output_log += dataReceivedEventArgs.Data;
-            Console.WriteLine(dataReceivedEventArgs.Data);
-            if (!report_view_process.HasExited && report_output_log.Contains("No issues found."))
-            {
-                report_view_process.Kill();
-            }
-        }
-
-        void ProcessRecievedForReportViewError(Object sender, DataReceivedEventArgs dataReceivedEventArgs)
-        {
-            report_output_log += dataReceivedEventArgs.Data;
-            Console.WriteLine(dataReceivedEventArgs.Data);
-            if (!report_view_process.HasExited && report_output_log.Contains("issues found."))
-            {
-                report_view_process.Kill();
-            }
-        }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -578,6 +440,11 @@ namespace JPlag
         {
             plagairism_detection_log += dataReceivedEventArgs.Data;
             Console.WriteLine(dataReceivedEventArgs.Data);
+        }
+
+        private void textBox3_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

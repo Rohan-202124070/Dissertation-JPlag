@@ -28,9 +28,6 @@ namespace JPlag
             groupsTopComaprision = groups;
             var group_form = new Groups();
             group_form.Show();
-            group_form.label2.Hide();
-            group_form.label4.Hide();
-            group_form.label5.Hide();
             Button[] buttons = new Button[groups.groups_names.Count];
             int i = 0;
             
@@ -57,12 +54,12 @@ namespace JPlag
 
             void open_group_clicked(object sender, EventArgs e, string group_number, HashSet<string> in_groups, HashSet<TopComparison> in_top_comparision)
             {
-                group_form.label5.Show();
-                group_form.label5.Text = "- " + group_number;
-                group_form.label2.Show();
-                group_form.label4.Show();
+                //group_form.label5.Show();
+                //group_form.label5.Text = "- " + group_number;
+               // group_form.label2.Show();
+                //group_form.label4.Show();
                 group_form.panel2.Controls.Clear();
-                DataGridView name_grid_view = new DataGridView();
+                /*DataGridView name_grid_view = new DataGridView();
                 name_grid_view.ColumnHeadersDefaultCellStyle.BackColor = Color.Navy;
                 name_grid_view.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
                 name_grid_view.BackgroundColor = Color.WhiteSmoke;
@@ -90,10 +87,29 @@ namespace JPlag
                     string[] row = { count.ToString(), name };
                     name_grid_view.Rows.Add(row);
                     count++;
+                }*/
+
+                //Graph view
+                //https://csharp.hotexamples.com/examples/Microsoft.Msagl.Drawing/Graph/-/php-graph-class-examples.html
+                //https://github.com/albahari/automatic-graph-layout
+                //https://stackoverflow.com/questions/61568496/visualize-data-structures-such-as-trees-and-graphs-in-c-sharp
+                var graph = new Microsoft.Msagl.Drawing.Graph(group_number);
+                graph.Attr.Color = Microsoft.Msagl.Drawing.Color.DarkSeaGreen;
+                graph.Attr.BackgroundColor = Microsoft.Msagl.Drawing.Color.AliceBlue;
+                foreach (TopComparison topComparison in in_top_comparision)
+                {
+                    Microsoft.Msagl.Drawing.Edge arco = graph.AddEdge(topComparison.first_submission, topComparison.second_submission);
+                    arco.LabelText = topComparison.match_percentage.ToString();
+                    arco.Label.FontSize = 6.0;
+                    arco.Attr.Color = Microsoft.Msagl.Drawing.Color.DarkSeaGreen;
+                    arco.SourceNode.Attr.Color = Microsoft.Msagl.Drawing.Color.DarkSeaGreen;
+                    arco.TargetNode.Attr.Color = Microsoft.Msagl.Drawing.Color.DarkSeaGreen;
                 }
+                gViewer1.Graph = graph;
+                group_form.panel2.Controls.Add(gViewer1);
 
                 // comparision grid view 
-                DataGridView comparision_grid_view = new DataGridView();
+                /*DataGridView comparision_grid_view = new DataGridView();
                 comparision_grid_view.ColumnHeadersDefaultCellStyle.BackColor = Color.Navy;
                 comparision_grid_view.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
                 comparision_grid_view.BackgroundColor = Color.WhiteSmoke;
@@ -101,7 +117,7 @@ namespace JPlag
                     new Font(comparision_grid_view.Font, FontStyle.Bold);
 
                 comparision_grid_view.Location = new Point(10, 345);
-                comparision_grid_view.Size = new Size(700, 250);
+                comparision_grid_view.Size = 
                 group_form.panel2.Controls.Add(comparision_grid_view);
                 comparision_grid_view.ScrollBars = ScrollBars.Both;
                 comparision_grid_view.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
@@ -123,7 +139,9 @@ namespace JPlag
                     string[] row = { comapre_count.ToString(), topComparison.first_submission, topComparison.second_submission, topComparison.match_percentage.ToString() };
                     comparision_grid_view.Rows.Add(row);
                     comapre_count++;
-                }
+                }*/
+
+
             }
 
         }

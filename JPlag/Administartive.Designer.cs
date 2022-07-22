@@ -1,7 +1,7 @@
 ﻿
 namespace JPlag
 {
-    partial class Form1
+    partial class Administartive
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@ namespace JPlag
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Administartive));
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.folderBrowserDialog2 = new System.Windows.Forms.FolderBrowserDialog();
@@ -38,7 +38,6 @@ namespace JPlag
             this.label2 = new System.Windows.Forms.Label();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.button3 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
@@ -69,9 +68,9 @@ namespace JPlag
             this.button2.BackColor = System.Drawing.SystemColors.MenuHighlight;
             this.button2.Location = new System.Drawing.Point(868, 560);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(313, 39);
+            this.button2.Size = new System.Drawing.Size(314, 38);
             this.button2.TabIndex = 2;
-            this.button2.Text = "Groups";
+            this.button2.Text = "View Groups";
             this.button2.UseVisualStyleBackColor = false;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
@@ -104,38 +103,27 @@ namespace JPlag
             // 
             this.button3.Location = new System.Drawing.Point(714, 45);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(108, 33);
+            this.button3.Size = new System.Drawing.Size(108, 32);
             this.button3.TabIndex = 6;
             this.button3.Text = "Browse";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
-            // 
-            // button4
-            // 
-            this.button4.BackColor = System.Drawing.SystemColors.MenuHighlight;
-            this.button4.Location = new System.Drawing.Point(868, 446);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(313, 39);
-            this.button4.TabIndex = 7;
-            this.button4.Text = "Project Build";
-            this.button4.UseVisualStyleBackColor = false;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // button5
             // 
             this.button5.BackColor = System.Drawing.SystemColors.MenuHighlight;
             this.button5.Location = new System.Drawing.Point(868, 506);
             this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(313, 39);
+            this.button5.Size = new System.Drawing.Size(314, 38);
             this.button5.TabIndex = 8;
-            this.button5.Text = "Run Report View";
+            this.button5.Text = "View Report";
             this.button5.UseVisualStyleBackColor = false;
             this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(71, 97);
+            this.label3.Location = new System.Drawing.Point(70, 97);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(130, 20);
             this.label3.TabIndex = 9;
@@ -181,7 +169,7 @@ namespace JPlag
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(12, 244);
+            this.label5.Location = new System.Drawing.Point(12, 245);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(189, 20);
             this.label5.TabIndex = 13;
@@ -189,16 +177,17 @@ namespace JPlag
             // 
             // textBox3
             // 
-            this.textBox3.Location = new System.Drawing.Point(240, 244);
+            this.textBox3.Location = new System.Drawing.Point(240, 245);
             this.textBox3.Name = "textBox3";
             this.textBox3.Size = new System.Drawing.Size(444, 26);
             this.textBox3.TabIndex = 14;
+            this.textBox3.TextChanged += new System.EventHandler(this.textBox3_TextChanged);
             // 
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(714, 288);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(108, 33);
+            this.button1.Size = new System.Drawing.Size(108, 32);
             this.button1.TabIndex = 1;
             this.button1.Text = "Browse";
             this.button1.UseVisualStyleBackColor = true;
@@ -208,7 +197,7 @@ namespace JPlag
             // 
             this.button6.Location = new System.Drawing.Point(714, 237);
             this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(108, 33);
+            this.button6.Size = new System.Drawing.Size(108, 32);
             this.button6.TabIndex = 15;
             this.button6.Text = "Browse";
             this.button6.UseVisualStyleBackColor = true;
@@ -217,9 +206,9 @@ namespace JPlag
             // button7
             // 
             this.button7.BackColor = System.Drawing.SystemColors.MenuHighlight;
-            this.button7.Location = new System.Drawing.Point(868, 389);
+            this.button7.Location = new System.Drawing.Point(868, 448);
             this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(313, 39);
+            this.button7.Size = new System.Drawing.Size(314, 38);
             this.button7.TabIndex = 16;
             this.button7.Text = "Run Plagiarism Detection";
             this.button7.UseVisualStyleBackColor = false;
@@ -228,7 +217,7 @@ namespace JPlag
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(493, 100);
+            this.label6.Location = new System.Drawing.Point(494, 100);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(252, 20);
             this.label6.TabIndex = 17;
@@ -241,10 +230,11 @@ namespace JPlag
             this.textBox4.Size = new System.Drawing.Size(146, 26);
             this.textBox4.TabIndex = 18;
             // 
-            // Form1
+            // Administartive
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.ClientSize = new System.Drawing.Size(1226, 629);
             this.Controls.Add(this.textBox4);
             this.Controls.Add(this.label6);
@@ -257,7 +247,6 @@ namespace JPlag
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.button5);
-            this.Controls.Add(this.button4);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.label2);
@@ -265,8 +254,9 @@ namespace JPlag
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.textBox1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "Form1";
+            this.Name = "Administartive";
             this.Text = "JPlag";
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -283,7 +273,6 @@ namespace JPlag
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox comboBox1;
