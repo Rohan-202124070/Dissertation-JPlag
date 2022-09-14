@@ -29,6 +29,7 @@ namespace JPlag
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Comparision));
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.richTextBox2 = new System.Windows.Forms.RichTextBox();
             this.SuspendLayout();
@@ -65,6 +66,7 @@ namespace JPlag
             this.ClientSize = new System.Drawing.Size(1924, 1050);
             this.Controls.Add(this.richTextBox2);
             this.Controls.Add(this.richTextBox1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Comparision";
             this.Text = "Comparision";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;

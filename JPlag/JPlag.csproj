@@ -12,6 +12,22 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>C:\Users\rnire\OneDrive\Desktop\JPLAG APP\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>4</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -34,6 +50,18 @@
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>0A21007FFA68C88E916F6936AF84CE539C392243</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>JPlag_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>true</SignManifests>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
@@ -98,25 +126,31 @@
     </Compile>
     <Compile Include="Group.cs" />
     <Compile Include="GroupsTopComaprision.cs" />
+    <Compile Include="Help.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Help.Designer.cs">
+      <DependentUpon>Help.cs</DependentUpon>
+    </Compile>
     <Compile Include="Home.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Home.Designer.cs">
       <DependentUpon>Home.cs</DependentUpon>
     </Compile>
-    <Compile Include="Manage.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Manage.Designer.cs">
-      <DependentUpon>Manage.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Match.cs" />
     <Compile Include="PlagiarismReport.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="PlagiarismReport.Designer.cs">
       <DependentUpon>PlagiarismReport.cs</DependentUpon>
     </Compile>
+    <Compile Include="Reportview.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Reportview.Designer.cs">
+      <DependentUpon>Reportview.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Match.cs" />
     <Compile Include="Start.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -129,12 +163,6 @@
     <Compile Include="Overview.cs" />
     <Compile Include="SubmissionMatch.cs" />
     <Compile Include="TopComparison.cs" />
-    <Compile Include="ViewGroup.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ViewGroup.Designer.cs">
-      <DependentUpon>ViewGroup.cs</DependentUpon>
-    </Compile>
     <EmbeddedResource Include="Administartive.resx">
       <DependentUpon>Administartive.cs</DependentUpon>
     </EmbeddedResource>
@@ -144,14 +172,17 @@
     <EmbeddedResource Include="GroupForm.resx">
       <DependentUpon>GroupForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Help.resx">
+      <DependentUpon>Help.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Home.resx">
       <DependentUpon>Home.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Manage.resx">
-      <DependentUpon>Manage.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="PlagiarismReport.resx">
       <DependentUpon>PlagiarismReport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reportview.resx">
+      <DependentUpon>Reportview.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Start.resx">
       <DependentUpon>Start.cs</DependentUpon>
@@ -165,9 +196,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="ViewGroup.resx">
-      <DependentUpon>ViewGroup.cs</DependentUpon>
-    </EmbeddedResource>
+    <None Include="JPlag_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -181,6 +210,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.7.2 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

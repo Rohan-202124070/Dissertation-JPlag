@@ -27,6 +27,7 @@ namespace JPlag
         {
             button1.BackColor = Color.DodgerBlue;
             button3.BackColor = Color.DodgerBlue;
+            button4.BackColor = Color.DodgerBlue;
             button2.BackColor = Color.AliceBlue;
             this.panel1.Controls.Clear();
             Administartive myForm = new Administartive();
@@ -40,6 +41,7 @@ namespace JPlag
         {
             button2.BackColor = Color.DodgerBlue;
             button3.BackColor = Color.DodgerBlue;
+            button4.BackColor = Color.DodgerBlue;
             button1.BackColor = Color.AliceBlue;
             this.panel1.Controls.Clear();
             Home home = new Home();
@@ -53,6 +55,7 @@ namespace JPlag
         {
             button2.BackColor = Color.DodgerBlue;
             button1.BackColor = Color.DodgerBlue;
+            button4.BackColor = Color.DodgerBlue;
             button3.BackColor = Color.AliceBlue;
             this.panel1.Controls.Clear();
             Manage manage = new Manage();
@@ -60,6 +63,25 @@ namespace JPlag
             manage.AutoScroll = true;
             this.panel1.Controls.Add(manage);
             manage.Show();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            button2.BackColor = Color.DodgerBlue;
+            button1.BackColor = Color.DodgerBlue;
+            button4.BackColor = Color.AliceBlue;
+            button3.BackColor = Color.DodgerBlue;
+            this.panel1.Controls.Clear();
+            Help help = new Help();
+            help.TopLevel = false;
+            help.AutoScroll = true;
+            this.panel1.Controls.Add(help);
+            help.Show();
+        }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }
